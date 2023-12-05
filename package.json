@@ -10,7 +10,8 @@
   "scripts": {
     "test": "gulp test",
     "start": "gulp serve",
-    "build": "gulp build"
+    "build": "gulp build",
+    "assets": "npx live-server support"
   },
   "author": {
     "name": "Hakim El Hattab",
