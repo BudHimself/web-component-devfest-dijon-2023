@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Wars - Slot</title>
+  <link rel="stylesheet" type="text/css" href="../utils/star.css">
+  <link rel="stylesheet" type="text/css" href="hero.css">
+  <script defer src="../utils/star.js"></script>
+  <script defer src="../components/saberShadow-sloted.js"></script>
+</head>
+<body>
+<div class="opponents">
+  <my-saber opponent-name="hero" >
+    <img slot="bg" src="eclair.jpg" alt="eclair">
+  </my-saber>
+</div>
+<template id="saber">
+  <div class="opponent">
+    <img class="opponent-img" src=""/>
+    <div class="saber">
+      <slot name="bg"></slot>
+      <img class="opponent-saber" src="../img/light-saber.png" />
+    </div>
+  </div>
+</template>
+</body>
+</html>

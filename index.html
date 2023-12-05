@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/black.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Web Component</h1>
+					<p>
+						DevFest Dijon
+						<br>
+						8 décembre 2023
+					</p>
+				</section>
+				<section>
+					<h1>who is this dude ?</h1>
+					<div style="display: flex;flex-direction: column;">
+						<div style="display: flex; justify-content: space-around; width: 100%; flex-direction: row; align-items: center;">
+							<img src="/assets/fh.jfif" width="200px"  alt="francs henry"/>
+							<ul style="list-style-type: none;">
+								<li style="display: flex; align-items: center;">
+									<img width="50px" src="/assets/github.png" style="margin-right: 10px;">
+									BudHimself
+								</li>
+								<li style="display: flex; align-items: center;">
+									<img width="50px" src="/assets/linkedin.png" style="padding-right: 10px">
+									francois-henry
+								</li>
+							</ul>
+						</div>
+						<div style="display: flex;flex-direction: row; align-items: end; justify-content: space-between">
+							<ul style="list-style-type: square;">
+								<li>Francois HENRY</li>
+								<li>Créateur de bug en frontend et en backend<br>(aka développeur fullstack) depuis 2017</li>
+								<li>Consultant pour Talan depuis 2019</li>
+							</ul>
+							<div style="display: flex; justify-content: center;">
+								<img height="80px" src="/assets/talan.png" style="background-color: white;padding: 20px;object-fit: contain">
+							</div>
+						</div>
+					</div>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/intro/start.html">
+					<audio id="start_sound" src="/support/intro/Star Wars Theme Song By John Williams.mp3"></audio>
+					<script>
+						const audio = document.querySelector('#start_sound')
+						audio.volume = 0.2
+					</script>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/opponents/opponents.html">
+				</section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html" data-trim data-line-numbers="|1,7|2|3-6|">
+						<div class="opponent">
+							<img class="opponent-img" src="../img/angular.png"/>
+							<div class="saber">
+								<div class="saber-light" id="saber-angular"></div>
+								<img class="opponent-saber" src="../img/light-saber.png" />
+							</div>
+						</div>
+						</code>
+					</pre>
+					<div class="fragment">
+						<pre data-id="code-animation">
+							<code class="hljs html" data-trim data-line-numbers="2,4|">
+							<div class="opponent">
+								<img class="opponent-img" src="../img/react.png"/>
+								<div class="saber">
+									<div class="saber-light" id="saber-react"></div>
+									<img class="opponent-saber" src="../img/light-saber.png" />
+								</div>
+							</div>
+							</code>
+						</pre>
+					</div>
+					<div class="fragment">
+						<pre data-id="code-animation">
+							<code class="hljs html" data-trim data-line-numbers="2,4|">
+							<div class="opponent">
+								<img class="opponent-img" src="../img/vue.png"/>
+								<div class="saber">
+									<div class="saber-light" id="saber-vue"></div>
+									<img class="opponent-saber" src="../img/light-saber.png" />
+								</div>
+							</div>
+							</code>
+						</pre>
+					</div>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/hero/hero.html"></section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html" data-trim data-line-numbers="|1,8|2-7">
+							<template id="saber">
+								<div class="opponent">
+									<img class="opponent-img" src=""/>
+									<div class="saber">
+										<img class="opponent-saber" src="../img/light-saber.png" />
+									</div>
+								</div>
+							</template>
+						</code>
+					</pre>
+					<aside class="notes">
+						il manque la source de l'image et la div qui permet de faire le laser du sabre.
+					</aside>
+				</section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs js" data-trim data-line-numbers="|1|2|4|6-7|9-10|12|14|15|41-47|43|17-18|20|49-51|52-57|59-64|66-68|71|22-23|24|27-39|25|75">
+							class Saber extends HTMLElement {
+								constructor() {
+									super();
+									const opponentName = this.getAttribute("opponent-name")
+
+									const template = document.querySelector("#saber")
+									const templateClone = template.cloneNode(true)
+
+									const opponentImg = templateClone.content.querySelector("img.opponent-img")
+									opponentImg.setAttribute("src", `../img/${opponentName}.png`)
+
+									const templateContent = templateClone.content.querySelector(".opponent")
+
+									const saber = templateContent.querySelector(".saber")
+									const saberLight = this.createSaberLight(opponentName)
+
+									saber.prepend(saberLight)
+									templateContent.appendChild(saber)
+
+									const style = this.getStyle()
+
+									this.appendChild(templateContent)
+									this.appendChild(style)
+									this.addOpeningEvent()
+								}
+
+								addOpeningEvent() {
+									this.addEventListener('click', (event) => {
+										const open = "saber-open"
+										const parent = event.target.parentNode
+										const elem = parent.querySelector(".saber-light")
+
+										if (elem.classList.contains(open)) {
+											elem.classList.remove(open)
+										} else {
+											elem.classList.add(open)
+										}
+									})
+								}
+
+								createSaberLight(opponentName) {
+									const saberLight = document.createElement("div")
+									saberLight.setAttribute("id", `saber-${opponentName}`)
+									saberLight.classList.add("saber-light")
+
+									return saberLight
+								}
+
+								getStyle() {
+									const style = document.createElement("style")
+									style.textContent = `
+										.saber {
+											display: flex;
+											flex-direction: column;
+											align-items: center;
+											justify-content: center;
+										}
+
+										.saber-light {
+											height: 0;
+											transition: height 1s linear;
+											width: 2px;
+											margin-right: 3px;
+										}
+
+										.saber-open {
+											height: 300px;
+										}
+									`
+
+									return style
+								}
+							}
+
+							customElements.define('my-saber', Saber)
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre data-id="code-animation">
+					<code class="hljs html">
+						<my-saber opponent-name="hero"></my-saber>
+					</code>
+					</pre>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/web-component-no-shadow/web-component-no-shadow.html"></section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/first-end/first-end.html"></section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/intro2/intro2.html">
+					<audio id="sound" src="/support/intro2/Star Wars Theme Song By John Williams.mp3"></audio>
+					<script>
+						const audio2 = document.querySelector('#sound')
+						audio2.volume = 0.2
+					</script>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/web-component-shadow/web-component-shadow.html"></section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs js" data-line-numbers="|5|11-12">
+							class Saber extends HTMLElement {
+								constructor() {
+									super();
+									const shadow = this.attachShadow({mode: "open"})
+									const opponentName = this.getAttribute("opponent-name")
+
+									const template = document.querySelector("#saber")
+									const templateClone = template.cloneNode(true)
+									...
+									shadow.appendChild(templateContent)
+									shadow.appendChild(style)
+						</code>
+					</pre>
+				</section>
+				<section data-background-transition="zoom" data-background-iframe="http://127.0.0.1:8080/web-component-shadow/web-component-shadow.html"></section>
+				<section data-background-iframe="http://127.0.0.1:8080/shadowGraph/shadowGraph.html"></section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html">
+							<my-saber opponent-name="hero"></my-saber>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html">
+							<my-saber opponent-name="hero">
+								<img src="/assets/eclair.jpg" alt="eclair">
+							</my-saber>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html" data-line-numbers="|6">
+							<template id="saber">
+							  <div class="opponent">
+								<img class="opponent-img" src=""/>
+								<div class="saber">
+								  <slot name="bg"></slot>
+								  <img class="opponent-saber" src="../img/light-saber.png" />
+								</div>
+							  </div>
+							</template>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs css" data-line-numbers="|2|3|4-5|8|11|12-13">
+							::slotted(img[slot="bg"]) {
+								z-index: -1;
+								transform: rotate(90deg);
+								width: 0px;
+								bottom: 320px;
+								position: absolute;
+								transition: width 1s linear, bottom 1s linear;
+							}
+
+							::slotted(img.bg-open) {
+								width: 350px;
+								bottom: 395px
+							}
+
+						</code>
+					</pre>
+					<aside class="notes">
+						::slotted -> pseudo-element
+					</aside>
+				</section>
+				<section data-background-iframe="http://127.0.0.1:8080/web-component-sloted/index.html"></section>
+				<section>
+					<pre data-id="code-animation">
+						<code class="hljs html">
+							<my-saber opponent-name="hero">
+								<img slot="bg" src="/assets/eclair.jpg" alt="eclair">
+							</my-saber>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h1>Les web component dans un vrai projet ?</h1>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# lit.dev
+
+						Sur-couche des api natives :
+						- Annotation
+						- Support du Typescript
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# lit.dev
+
+						Pas de chaine de build de librairie.
+						Il faut prendre en main webpack et rollup.
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# stencil js
+
+						- Framework complet
+						- Support JSX et TSX
+						- Chaine de build complet
+						- Intégration des principaux framework
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# Merci !
+
+						Avez-vous des questions ?
+
+						presentation :
+					</script>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/zoom/zoom.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				width:1080,
+				height: 800,
+				autoPlayMedia: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealZoom, RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
